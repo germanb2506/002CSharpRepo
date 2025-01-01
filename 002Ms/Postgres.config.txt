@@ -1,0 +1,1 @@
+C:\Users\Andres>docker run --name ApiModel -e POSTGRES_USER=andres -e POSTGRES_PASSWORD=Ac105524 -e POSTGRES_DB=ApiModel -p 5432:5432 -d postgres
