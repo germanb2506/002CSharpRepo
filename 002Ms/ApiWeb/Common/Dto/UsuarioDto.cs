@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 namespace Common.Dto
 {
     public class UsuarioDto
@@ -6,6 +7,8 @@ namespace Common.Dto
         public int IdUsuario { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [Required]
+        [MaxLength(100)]    
         public string? Nombre { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

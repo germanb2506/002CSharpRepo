@@ -11,20 +11,30 @@ namespace WebApi.Controllers
     {
         #region Inyección y Constructor
         private readonly ICrud _crudService;
+        private readonly ILogger<UsuarioController> _logger;    
 
-        public UsuarioController(ICrud crudService)
+        public UsuarioController(ICrud crudService, ILogger<UsuarioController> logger)
         {
             _crudService = crudService;
+            _logger = logger;
         }
         #endregion
 
         #region Crear Usuario
         [HttpPost("Create")]
-        [ProducesResponseType(typeof(Result<UsuarioDto>), 201)]
-        [ProducesResponseType(typeof(Result<UsuarioDto>), 400)]
+        [ProducesResponseType(typeof(Result<UsuarioDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<UsuarioDto>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Result<UsuarioDto>), 500)]
         public async Task<IActionResult> CreateAsync([FromBody] UsuarioDto usuarioDto)
         {
+            if (!ModelState.IsValid) //Esto sirve para validar con lo contenido en las data notations del DTO 
+            {
+                return BadRequest(ModelState);
+            }
+            if(usuarioDto == null)
+            {
+                return BadRequest();
+            }
             var result = await _crudService.CreateAsync(usuarioDto);
 
             return result.ResponseCode switch

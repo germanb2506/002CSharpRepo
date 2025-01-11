@@ -15,6 +15,7 @@
         /// Indica si la operación fue exitosa.
         /// </summary>
         public bool Success { get; set; }
+       // public bool  IsExitoso { get; set; } , este lo podemos emplear para remmplazar el success anterior 
 
         /// <summary>
         /// Mensaje asociado a la respuesta.
