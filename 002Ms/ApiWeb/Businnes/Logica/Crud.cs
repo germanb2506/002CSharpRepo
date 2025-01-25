@@ -28,7 +28,7 @@ namespace Businnes.Logica
         {
             if (usuarioDto == null)
             {
-                return Result<UsuarioDto>.ErrorResponse(
+                return Result<UsuarioDto>.Error(
                     code: ResponseCode.BadRequest,
                     message: "No se puede cargar un dato vacío en la base de datos"
                 );
@@ -62,7 +62,7 @@ namespace Businnes.Logica
                         // Actualizar el ID en el DTO
                         usuarioDto.IdUsuario = usuario.IdUsuario;
 
-                        return Result<UsuarioDto>.SuccessResponse(
+                        return Result<UsuarioDto>.Success(
                             data: usuarioDto,
                             message: "El registro se ha guardado satisfactoriamente"
                         );
@@ -72,7 +72,7 @@ namespace Businnes.Logica
                         // Deshacer transacción en caso de error
                         await transaction.RollbackAsync();
 
-                        return Result<UsuarioDto>.ErrorResponse(
+                        return Result<UsuarioDto>.Error(
                             code: ResponseCode.InternalServerError,
                             message: "No se ha podido guardar correctamente la información"
                         );
@@ -81,7 +81,7 @@ namespace Businnes.Logica
             }
             catch (Exception ex)
             {
-                return Result<UsuarioDto>.ErrorResponse(
+                return Result<UsuarioDto>.Error(
                     code: ResponseCode.InternalServerError,
                     message: "No se ha podido guardar correctamente la información",
                     errors: new List<string> { ex.Message }
@@ -119,14 +119,14 @@ namespace Businnes.Logica
                 // Validar si el usuario no existe
                 if (usuario == null)
                 {
-                    return Result<UsuarioDto>.ErrorResponse(
+                    return Result<UsuarioDto>.Error(
                         code: ResponseCode.NotFound,
                         message: "Usuario no encontrado."
                     );
                 }
 
                 // Retornar usuario encontrado
-                return Result<UsuarioDto>.SuccessResponse(
+                return Result<UsuarioDto>.Success(
                     data: usuario,
                     message: "Usuario encontrado exitosamente."
                 );
@@ -134,7 +134,7 @@ namespace Businnes.Logica
             catch (Exception ex)
             {
                 // Manejo de errores y respuesta en caso de excepción
-                return Result<UsuarioDto>.ErrorResponse(
+                return Result<UsuarioDto>.Error(
                     code: ResponseCode.InternalServerError,
                     message: "Ocurrió un error al intentar obtener el usuario.",
                     errors: new List<string> { ex.Message }
@@ -168,14 +168,14 @@ namespace Businnes.Logica
                 // Validar si no se encontraron usuarios
                 if (usuarios == null || !usuarios.Any())
                 {
-                    return Result<List<UsuarioDto>>.ErrorResponse(
+                    return Result<List<UsuarioDto>>.Error(
                         code: ResponseCode.NotFound,
                         message: "No se encontraron usuarios."
                     );
                 }
 
                 // Retornar lista de usuarios encontrados
-                return Result<List<UsuarioDto>>.SuccessResponse(
+                return Result<List<UsuarioDto>>.Success(
                     data: usuarios,
                     message: "Usuarios obtenidos exitosamente."
                 );
@@ -183,7 +183,7 @@ namespace Businnes.Logica
             catch (Exception ex)
             {
                 // Manejo de errores y retorno de respuesta en caso de excepción
-                return Result<List<UsuarioDto>>.ErrorResponse(
+                return Result<List<UsuarioDto>>.Error(
                     code: ResponseCode.InternalServerError,
                     message: "Ocurrió un error al intentar obtener los usuarios.",
                     errors: new List<string> { ex.Message }
@@ -212,7 +212,7 @@ namespace Businnes.Logica
 
                 if (usuario == null)
                 {
-                    return Result<UsuarioDto>.ErrorResponse(
+                    return Result<UsuarioDto>.Error(
                         code: ResponseCode.NotFound,
                         message: "Usuario no encontrado."
                     );
@@ -249,7 +249,7 @@ namespace Businnes.Logica
                 // Asignar el ID actualizado al DTO
                 usuarioDto.IdUsuario = usuario.IdUsuario;
 
-                return Result<UsuarioDto>.SuccessResponse(
+                return Result<UsuarioDto>.Success(
                     data: usuarioDto,
                     message: "Usuario actualizado exitosamente."
                 );
@@ -258,7 +258,7 @@ namespace Businnes.Logica
             {
                 // Rollback en caso de error
                 await transaction.RollbackAsync();
-                return Result<UsuarioDto>.ErrorResponse(
+                return Result<UsuarioDto>.Error(
                     code: ResponseCode.InternalServerError,
                     message: "Error al actualizar el usuario.",
                     errors: new List<string> { ex.Message }
@@ -268,13 +268,12 @@ namespace Businnes.Logica
         #endregion
 
 
-        #region Eliminar Usuario
         /// <summary>
         /// Elimina un usuario por su ID.
         /// </summary>
         /// <param name="idUsuario">ID del usuario a eliminar.</param>
         /// <returns>Resultado del proceso.</returns>
-        public async Task<Result<string>> DeleteAsync(int idUsuario)
+        public async Task<Result<UsuarioDto>> DeleteAsync(int idUsuario)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -285,7 +284,7 @@ namespace Businnes.Logica
 
                 if (usuario == null)
                 {
-                    return Result<string>.ErrorResponse(
+                    return Result<UsuarioDto>.Error(
                         code: ResponseCode.NotFound,
                         message: "Usuario no encontrado."
                     );
@@ -298,8 +297,8 @@ namespace Businnes.Logica
                 // Realiza el commit de la transacción
                 await transaction.CommitAsync();
 
-                return Result<string>.SuccessResponse(
-                    data: "Usuario eliminado exitosamente.",
+                return Result<UsuarioDto>.Success(
+                    data: null, // No se retorna nada en `data` para evitar redundancia
                     message: "El usuario ha sido eliminado correctamente."
                 );
             }
@@ -307,14 +306,14 @@ namespace Businnes.Logica
             {
                 // En caso de error, realiza el rollback
                 await transaction.RollbackAsync();
-                return Result<string>.ErrorResponse(
+                return Result<UsuarioDto>.Error(
                     code: ResponseCode.InternalServerError,
                     message: "Error al eliminar el usuario.",
                     errors: new List<string> { ex.Message }
                 );
             }
         }
-        #endregion
+
 
     }
 

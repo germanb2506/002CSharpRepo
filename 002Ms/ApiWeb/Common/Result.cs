@@ -1,9 +1,11 @@
-﻿namespace Common
+﻿using System.Text.Json.Serialization;
+
+namespace Common
 {
     /// <summary>
     /// Clase genérica para manejar respuestas estándar en la aplicación.
     /// </summary>
-    /// <typeparam name="T">Contiene los datos de la aplicación</typeparam>
+    /// <typeparam name="T">Tipo de datos devueltos en caso de éxito.</typeparam>
     public class Result<T>
     {
         /// <summary>
@@ -14,8 +16,7 @@
         /// <summary>
         /// Indica si la operación fue exitosa.
         /// </summary>
-        public bool Success { get; set; }
-       // public bool  IsExitoso { get; set; } , este lo podemos emplear para remmplazar el success anterior 
+        public bool IsExitoso { get; set; }
 
         /// <summary>
         /// Mensaje asociado a la respuesta.
@@ -30,21 +31,23 @@
         /// <summary>
         /// Lista opcional de errores en caso de fallo.
         /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public List<string>? Errors { get; set; }
 
         /// <summary>
         /// Identificador de trazabilidad único para depuración.
         /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? TraceId { get; set; }
 
         /// <summary>
         /// Crea una respuesta de éxito de forma simplificada.
         /// </summary>
-        public static Result<T> SuccessResponse(T data, string message = "Operación exitosa", string? traceId = null) =>
+        public static Result<T> Success(T data, string message = "Operación exitosa", string? traceId = null) =>
             new Result<T>
             {
                 ResponseCode = ResponseCode.OK,
-                Success = true,
+                IsExitoso = true,
                 Message = message,
                 Data = data,
                 TraceId = traceId
@@ -53,11 +56,11 @@
         /// <summary>
         /// Crea una respuesta de error de forma simplificada.
         /// </summary>
-        public static Result<T> ErrorResponse(ResponseCode code, string message, List<string>? errors = null, string? traceId = null) =>
+        public static Result<T> Error(ResponseCode code, string message, List<string>? errors = null, string? traceId = null) =>
             new Result<T>
             {
                 ResponseCode = code,
-                Success = false,
+                IsExitoso = false,
                 Message = message,
                 Errors = errors,
                 TraceId = traceId

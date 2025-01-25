@@ -11,7 +11,7 @@ namespace WebApi.Controllers
     {
         #region Inyección y Constructor
         private readonly ICrud _crudService;
-        private readonly ILogger<UsuarioController> _logger;    
+        private readonly ILogger<UsuarioController> _logger;
 
         public UsuarioController(ICrud crudService, ILogger<UsuarioController> logger)
         {
@@ -27,11 +27,11 @@ namespace WebApi.Controllers
         [ProducesResponseType(typeof(Result<UsuarioDto>), 500)]
         public async Task<IActionResult> CreateAsync([FromBody] UsuarioDto usuarioDto)
         {
-            if (!ModelState.IsValid) //Esto sirve para validar con lo contenido en las data notations del DTO 
+            if (!ModelState.IsValid) //Esto sirve para validar con lo contenido en las datanotations del DTO 
             {
                 return BadRequest(ModelState);
             }
-            if(usuarioDto == null)
+            if (usuarioDto == null)
             {
                 return BadRequest();
             }
@@ -58,8 +58,24 @@ namespace WebApi.Controllers
             return result.ResponseCode switch
             {
                 ResponseCode.OK => Ok(result),
-                ResponseCode.NotFound => NotFound(result),
-                _ => StatusCode(500, result)
+                ResponseCode.NotFound => NotFound(new Result<UsuarioDto>
+                {
+                    ResponseCode = ResponseCode.NotFound,
+                    IsExitoso = false,
+                    Message = result.Message,
+                    Data = null, // Data está vacío en caso de error
+                    Errors = result.Errors,
+                    TraceId = result.TraceId
+                }),
+                _ => StatusCode(500, new Result<UsuarioDto>
+                {
+                    ResponseCode = ResponseCode.InternalServerError,
+                    IsExitoso = false,
+                    Message = result.Message,
+                    Data = null, // Data está vacío en caso de error
+                    Errors = result.Errors,
+                    TraceId = result.TraceId
+                })
             };
         }
         #endregion
@@ -76,8 +92,24 @@ namespace WebApi.Controllers
             return result.ResponseCode switch
             {
                 ResponseCode.OK => Ok(result),
-                ResponseCode.NotFound => NotFound(result),
-                _ => StatusCode(500, result)
+                ResponseCode.NotFound => NotFound(new Result<List<UsuarioDto>>
+                {
+                    ResponseCode = ResponseCode.NotFound,
+                    IsExitoso = false,
+                    Message = result.Message,
+                    Data = null, // Data está vacío en caso de error
+                    Errors = result.Errors,
+                    TraceId = result.TraceId
+                }),
+                _ => StatusCode(500, new Result<List<UsuarioDto>>
+                {
+                    ResponseCode = ResponseCode.InternalServerError,
+                    IsExitoso = false,
+                    Message = result.Message,
+                    Data = null, // Data está vacío en caso de error
+                    Errors = result.Errors,
+                    TraceId = result.TraceId
+                })
             };
         }
         #endregion
@@ -96,17 +128,33 @@ namespace WebApi.Controllers
             {
                 ResponseCode.OK => Ok(result),
                 ResponseCode.BadRequest => BadRequest(result),
-                ResponseCode.NotFound => NotFound(result),
-                _ => StatusCode(500, result)
+                ResponseCode.NotFound => NotFound(new Result<UsuarioDto>
+                {
+                    ResponseCode = ResponseCode.NotFound,
+                    IsExitoso = false,
+                    Message = result.Message,
+                    Data = null, // Data está vacío en caso de error
+                    Errors = result.Errors,
+                    TraceId = result.TraceId
+                }),
+                _ => StatusCode(500, new Result<UsuarioDto>
+                {
+                    ResponseCode = ResponseCode.InternalServerError,
+                    IsExitoso = false,
+                    Message = result.Message,
+                    Data = null, // Data está vacío en caso de error
+                    Errors = result.Errors,
+                    TraceId = result.TraceId
+                })
             };
         }
         #endregion
 
         #region Eliminar Usuario
         [HttpDelete("Delete/{idUsuario:int}")]
-        [ProducesResponseType(typeof(Result<string>), 200)]
-        [ProducesResponseType(typeof(Result<string>), 404)]
-        [ProducesResponseType(typeof(Result<string>), 500)]
+        [ProducesResponseType(typeof(Result<UsuarioDto>), 200)]
+        [ProducesResponseType(typeof(Result<UsuarioDto>), 404)]
+        [ProducesResponseType(typeof(Result<UsuarioDto>), 500)]
         public async Task<IActionResult> DeleteAsync(int idUsuario)
         {
             var result = await _crudService.DeleteAsync(idUsuario);
@@ -114,8 +162,24 @@ namespace WebApi.Controllers
             return result.ResponseCode switch
             {
                 ResponseCode.OK => Ok(result),
-                ResponseCode.NotFound => NotFound(result),
-                _ => StatusCode(500, result)
+                ResponseCode.NotFound => NotFound(new Result<string>
+                {
+                    ResponseCode = ResponseCode.NotFound,
+                    IsExitoso = false,
+                    Message = result.Message,
+                    Data = null, // Data está vacío en caso de error
+                    Errors = result.Errors,
+                    TraceId = result.TraceId
+                }),
+                _ => StatusCode(500, new Result<string>
+                {
+                    ResponseCode = ResponseCode.InternalServerError,
+                    IsExitoso = false,
+                    Message = result.Message,
+                    Data = null, // Data está vacío en caso de error
+                    Errors = result.Errors,
+                    TraceId = result.TraceId
+                })
             };
         }
         #endregion

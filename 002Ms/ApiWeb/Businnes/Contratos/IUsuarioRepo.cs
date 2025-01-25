@@ -1,15 +1,17 @@
-﻿using Common.Dto;
-using Data.Entidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Common;
+using Common.Dto;
 
-namespace Businnes.Contratos
+namespace Business.Contratos
 {
-    public interface IUsuarioRepo:IgenericRepo<Usuario>
+    public interface IUsuarioRepo
     {
-        Task<Usuario> Actualizar(Usuario usuario);
+        Task<Result<UsuarioDto>> CrearUsuario(UsuarioDto usuarioDto);
+        Task<Result<List<UsuarioDto>>> ObtenerUsuarios();
+        Task<Result<UsuarioDto>> ObtenerUsuarioPorId(int id);
+        Task<Result<UsuarioDto>> ActualizarUsuario(UsuarioDto usuarioDto);
+        Task<Result<bool>> EliminarUsuario(int id);
+        Task<Result<UsuarioDto>> GetProyUsuario(int id);
+        Task<Result<List<UsuarioDto>>> GetAllProyUsuarios();
     }
 }
+

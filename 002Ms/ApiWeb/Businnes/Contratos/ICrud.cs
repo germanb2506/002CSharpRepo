@@ -41,6 +41,6 @@ namespace Businnes.Contratos
         /// </summary>
         /// <param name="idUsuario">ID del usuario a eliminar.</param>
         /// <returns>Resultado del proceso.</returns>
-        Task<Result<string>> DeleteAsync(int idUsuario);
+        Task<Result<UsuarioDto>> DeleteAsync(int idUsuario);
     }
 }
